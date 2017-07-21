@@ -43,6 +43,10 @@ func (d *driver) Name() string {
 	return rbd.Name
 }
 
+func (d *driver) userName() string {
+	return d.config.GetString(rbd.ConfigUserName)
+}
+
 func (d *driver) Supported(
 	ctx types.Context,
 	opts types.Store) (bool, error) {
@@ -82,7 +86,9 @@ func (d *driver) LocalDevices(
 	ctx types.Context,
 	opts *types.LocalDevicesOpts) (*types.LocalDevices, error) {
 
-	devMap, err := utils.GetMappedRBDs(ctx)
+	username := d.userName()
+
+	devMap, err := utils.GetMappedRBDs(ctx, username)
 	if err != nil {
 		return nil, err
 	}
